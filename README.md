@@ -32,9 +32,9 @@ $ sudo pip install bottle
 The script in src/universal/bin will look at your jenkins instance for the specified green build and tag the repository with the same name as the job.
 
 
-# Dockerised HMRC-Release Container
+# Running inside a Docker container
 
-A Docker container that provides an environment to run the release script. Use the Dockerfile to build the container image. The image will install python, pip and all dependencies required. It will also setup an ssh-config file containing a reference to your GitHub private key. This key can be passed into the container using a volume at runtime.
+A Docker container has been provided to automate the environment required for the release script. Use the Dockerfile to build the container image, the image will install python, pip and all dependencies required. It will also setup an ssh-config file containing a reference to your GitHub private key. This key can be passed into the container using a volume at runtime.
 
 ```
 docker build -t hmrc-release .
@@ -42,13 +42,23 @@ docker build -t hmrc-release .
 
 ### Example Usage
 
+Run the container
 ```
-docker run -t -i -v "$GITHUB_PRIVATE_KEY_LOCATION:/root/.ssh/id_rsa_github" -e jenkins_user=$JENKINS_USER -e jenkins_key=JENKINS_KEY --entrypoint=/bin/bash --rm hmrc-release
+docker run \
+-t \
+-i \
+-v "$GITHUB_PRIVATE_KEY_LOCATION:/root/.ssh/id_rsa_github" \
+-e jenkins_user=$JENKINS_USER \
+-e jenkins_key=$JENKINS_KEY \
+--entrypoint=/bin/bash \
+--rm \
+hmrc-release
+```
 
-# Setup git config for first use
+Setup Git and run release.py
+```
 git config --global user.email "$GIT_EMAIL_ADDRESS"
 git config --global user.name "$GIT_USERNAME"
 
-# Run release script
 python bin/release.py business-tax-account 862
 ```
