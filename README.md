@@ -31,3 +31,24 @@ $ sudo pip install bottle
 * Tag the artefact: ```python release.py -v jenkins_job_name build_number```
 The script in src/universal/bin will look at your jenkins instance for the specified green build and tag the repository with the same name as the job.
 
+
+# Dockerised HMRC-Release Container
+
+A Docker container that provides an environment to run the release script. Use the Dockerfile to build the container image. The image will install python, pip and all dependencies required. It will also setup an ssh-config file containing a reference to your GitHub private key. This key can be passed into the container using a volume at runtime.
+
+```
+docker build -t hmrc-release .
+```
+
+### Example Usage
+
+```
+docker run -t -i -v "$GITHUB_PRIVATE_KEY_LOCATION:/root/.ssh/id_rsa_github" -e jenkins_user=$JENKINS_USER -e jenkins_key=JENKINS_KEY --entrypoint=/bin/bash --rm hmrc-release
+
+# Setup git config for first use
+git config --global user.email "$GIT_EMAIL_ADDRESS"
+git config --global user.name "$GIT_USERNAME"
+
+# Run release script
+python bin/release.py business-tax-account 862
+```
