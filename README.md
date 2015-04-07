@@ -31,3 +31,6 @@ $ sudo pip install bottle
 * Tag the artefact: ```python release.py -v jenkins_job_name build_number```
 The script in src/universal/bin will look at your jenkins instance for the specified green build and tag the repository with the same name as the job.
 
+## License ##
+ 
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
